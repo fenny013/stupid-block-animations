@@ -1,0 +1,67 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: build release artifacts
+        run: ./gradlew build
+
+      - name: prepare release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          shopt -s nullglob
+
+          for file in build/libs/*.jar; do
+            base="$(basename "$file")"
+            if [[ "$base" == *"-sources.jar" ]]; then
+              continue
+            fi
+            if [[ "$base" == *"-dev.jar" ]]; then
+              continue
+            fi
+
+            cp "$file" "release-assets/$base"
+            sha256sum "release-assets/$base" > "release-assets/$base.sha256"
+          done
+
+          ls -la release-assets
+
+      - name: publish GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          title="Release ${tag}"
+
+          gh release create "$tag" release-assets/* \
+            --title "$title" \
+            --generate-notes
