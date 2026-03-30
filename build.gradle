@@ -64,22 +64,15 @@ jar {
 	}
 }
 
-tasks.named("remapJar") {
+tasks.matching { it.name in ["remapJar", "sourcesJar", "remapSourcesJar"] }.configureEach {
 	archiveBaseName.set(releaseBaseName)
 	archiveVersion.set(releaseVersion)
-	archiveClassifier.set("")
-}
 
-tasks.named("sourcesJar") {
-	archiveBaseName.set(releaseBaseName)
-	archiveVersion.set(releaseVersion)
-	archiveClassifier.set("sources")
-}
-
-tasks.named("remapSourcesJar") {
-	archiveBaseName.set(releaseBaseName)
-	archiveVersion.set(releaseVersion)
-	archiveClassifier.set("sources")
+	if (name == "remapJar") {
+		archiveClassifier.set("")
+	} else {
+		archiveClassifier.set("sources")
+	}
 }
 
 publishing {
