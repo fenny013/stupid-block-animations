@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "fnn.stupidblockplacement.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BlockEntityRenderManagerMixin",
+    "BlockModelRendererMixin",
+    "BlockRenderManagerMixin",
+    "ChestBlockEntityRendererMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "ClientWorldMixin",
+    "RenderSectionRegionMixin",
+    "WorldRendererBlockDamageMixin",
+    "WorldRendererOutlineMixin",
+    "sodium.BlockOcclusionCacheMixin",
+    "sodium.BlockRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "stupid-block-animations",
+	"version": "${version}",
+	"name": "stupid block animations",
+	"description": "not very stupid",
+	"authors": [
+		"FNN!"
+	],
+	"contact": {
+		"homepage": "https://fuckingfuck.space/"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/stupid-block-animations/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"fnn.stupidblockplacement.StupidBlockPlacementClient"
+		],
+        "modmenu": [
+          "fnn.stupidblockplacement.config.StupidBlockPlacementModMenu"
+        ]
+	},
+    "mixins": [
+      {
+        "config": "stupid-block-animations.client.mixins.json",
+        "environment": "client"
+      }
+    ],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": ">=26.1",
+		"java": ">=25",
+		"fabric-api": "*",
+        "yet_another_config_lib_v3": "*"
+    }
+}
