@@ -7,27 +7,20 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.SignBlock;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import com.mojang.math.Axis;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.util.RandomSource;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class PlacementAnimationState {
     private static final int END_HOLD_TICKS = 1;
     private final BlockPos pos;
     private BlockState originalState;
-    private List<BlockStateModelPart> parts;
     private final Direction face;
     private final long startTick;
     private final int durationTicks;
@@ -61,7 +54,6 @@ public final class PlacementAnimationState {
         this.verticalSign = verticalSign;
         this.kind = kind;
         this.lastRefreshTick = startTick;
-        this.parts = collectParts(this.pos, this.originalState);
     }
     private float[] getBreakingAngles(long currentTick, float tickDelta) {
         StupidBlockPlacementConfig config = StupidBlockPlacementClient.CONFIG;
@@ -87,14 +79,6 @@ public final class PlacementAnimationState {
 
         return new float[]{horizontalAngle, verticalAngle};
     }
-    private static List<BlockStateModelPart> collectParts(BlockPos pos, BlockState state) {
-        Minecraft client = Minecraft.getInstance();
-        BlockStateModel model = client.getModelManager().getBlockStateModelSet().get(state);
-        RandomSource random = RandomSource.create(state.getSeed(pos));
-        List<BlockStateModelPart> parts = new ArrayList<>();
-        model.collectParts(random, parts);
-        return parts;
-    }
     public void beginHandoff(long currentTick) {
         if (this.handoffTick == null) {
             this.handoffTick = currentTick + 2;
@@ -117,7 +101,6 @@ public final class PlacementAnimationState {
         }
 
         this.originalState = newState;
-        this.parts = collectParts(this.pos, this.originalState);
     }
 
     public BlockPos pos() {
@@ -128,13 +111,10 @@ public final class PlacementAnimationState {
         return this.originalState;
     }
 
-    public List<BlockStateModelPart> parts() {
-        return this.parts;
-    }
-
     public boolean usesCustomWorldRender() {
         return this.originalState.getRenderShape() == RenderShape.MODEL
-                && !(this.originalState.getBlock() instanceof ChestBlock);
+                && !(this.originalState.getBlock() instanceof ChestBlock)
+                && !(this.originalState.getBlock() instanceof SignBlock);
     }
 
     public void applyLocal(PoseStack matrices, long currentTick, float tickDelta) {

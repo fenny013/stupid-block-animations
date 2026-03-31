@@ -847,7 +847,8 @@ public final class PlacementAnimationManager {
 
     private static boolean shouldUseCustomWorldRender(BlockState state) {
         return state.getRenderShape() == RenderShape.MODEL
-                && !(state.getBlock() instanceof ChestBlock);
+                && !(state.getBlock() instanceof ChestBlock)
+                && !(state.getBlock() instanceof SignBlock);
     }
 
     public static PlacementAnimationState getVisualAnimation(ClientLevel world, BlockPos pos) {

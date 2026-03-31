@@ -32,7 +32,7 @@ public final class PlacementAnimationRenderer {
         Vec3 cameraPos = context.levelState().cameraRenderState.pos;
 
         for (PlacementAnimationState animation : PlacementAnimationManager.activeStates()) {
-            if (!animation.usesCustomWorldRender() || animation.parts() == null || animation.parts().isEmpty()) {
+            if (!animation.usesCustomWorldRender()) {
                 continue;
             }
 
